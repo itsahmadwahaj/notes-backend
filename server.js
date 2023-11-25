@@ -3,8 +3,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
-import routerUser from "./routes/user_router.js";
-import routerNote from "./routes/note_router.js";
+import authRoutes from "./routes/auth.router.js";
+import notesRoutes from "./routes/notes.router.js";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swaggerOptions.js";
@@ -21,8 +21,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // Routes
-app.use(routerUser);
-app.use(routerNote);
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/notes", notesRoutes);
 
 // Starting Express Server
 const port = process.env.PORT;

@@ -12,7 +12,7 @@ export async function signUpUser(req, res) {
     let user = {};
 
     user = await prisma.user.findUnique({
-      where: { email: req.body.email },
+      where: { email: req.body.email }
     });
 
     if (user) {
@@ -25,11 +25,11 @@ export async function signUpUser(req, res) {
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
     user = await prisma.user.create({
-      data: { ...req.body, password: hashPassword },
+      data: { ...req.body, password: hashPassword }
     });
 
     return res.status(201).send({
-      message: "User created successfully.",
+      message: "User created successfully."
     });
   } catch (error) {
     console.log(error);
@@ -41,7 +41,7 @@ export async function signUpUser(req, res) {
 export async function signInUser(req, res) {
   try {
     const user = await prisma.user.findUnique({
-      where: { email: req.body.email },
+      where: { email: req.body.email }
     });
 
     if (!user) return res.status(401).send({ message: "Invalid email..." });
@@ -57,11 +57,11 @@ export async function signInUser(req, res) {
     const tokenData = {
       id: user.id,
       username: user.username,
-      email: user.email,
+      email: user.email
     };
 
     const token = Jwt.sign(tokenData, process.env.JWT_KEY, {
-      expiresIn: "15d",
+      expiresIn: "15d"
     });
 
     return res.status(200).send({
@@ -69,9 +69,9 @@ export async function signInUser(req, res) {
         token: token,
         id: user.id,
         username: user.username,
-        email: user.email,
+        email: user.email
       },
-      message: "signed in successfully",
+      message: "signed in successfully"
     });
   } catch (error) {
     return res.status(500).send({ message: "Internal Server Error" });

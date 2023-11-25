@@ -1,52 +1,12 @@
-openapi: 3.0.0
-info:
-  title: Notes-WebApp API
-  description: API for managing Notes-WebApp data.
-  version: 1.0.0
+tags:
+  - name: notes
+    description: Everything About Notes
 
 paths:
-  /api/v1/user/create:
+  /notes:
     post:
-      summary: Register a new user. Application/json need to be sent in body.
-      description: Register a new user with the provided details.
-      requestBody:
-        description: User data to register a new user.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserSignUpRequest"
-      responses:
-        "201":
-          description: User created successfully.
-        "400":
-          description: Invalid or missing data.
-        "409":
-          description: User with given email already exists!.
-        "500":
-          description: Internal server error.
-
-  /api/v1/user/signin:
-    post:
-      summary: Sign in a user.
-      description: Sign in a user using email and password.
-      requestBody:
-        description: User credentials for sign-in.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserSignInRequest"
-      responses:
-        "200":
-          description: signed in successfully.
-        "401":
-          description: Invalid email or password.
-        "500":
-          description: Internal server error.
-
-  /api/v1/note/create:
-    post:
+      tags:
+        - notes
       summary: Create a new Note.
       description: Create a new Note with the provided details.
       requestBody:
@@ -66,8 +26,9 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/readAll:
     get:
+      tags:
+        - notes
       summary: Get all notes data.
       description: Get a list of notes data based on the user's id determined from the JWT token passed in API request header.
       responses:
@@ -80,9 +41,18 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/read/:id:
+  /notes/{notes_id}:
+    parameters:
+        - name: notes_id
+          in: path
+          description: ID of Notes
+          required: true
+          schema:
+            type: string
     get:
-      summary: Get a Note data. Example; (http://localhost:4040/api/v1/note/read/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      tags:
+      - notes
+      summary: Get a Notes data providing specific notes_id.
       description: Get a Note data based on Note's ID passed in url and user's id determined from the JWT token passed in API request header.
       responses:
         "200":
@@ -96,9 +66,11 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/update/:id:
     put:
-      summary: Update an existing Note. Example; (http://localhost:4040/api/v1/note/update/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      tags:
+        - notes
+
+      summary: Update an existing Note providing its notes_id.
       description: Update an existing Note with the provided details. Note's ID will be received from url and user's id determined from the JWT token passed in API request header.
       requestBody:
         description: Note's data to update.
@@ -119,9 +91,10 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/delete/:id:
     delete:
-      summary: Delete an existing Note. Example; (http://localhost:4040/api/v1/note/delete/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      tags:
+        - notes
+      summary: Delete an existing Note providing its notes_id.
       description: Delete an existing Note using Note's ID, passed in url and user's id determined from the JWT token passed in API request header.
       responses:
         "200":
@@ -135,8 +108,10 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/share:
+  /notes/shared:
     post:
+      tags:
+        - notes
       summary: Share a Note with other user.
       description: Share a Note with other user by providing details. Note's ID and User' ID (to be shared with) will be passed in body.
       requestBody:
@@ -158,8 +133,9 @@ paths:
         "500":
           description: Internal server error.
 
-  /api/v1/note/readAllSharedNotes:
-    post:
+    get:
+      tags:
+        - notes
       summary: Read all Notes shared with a User.
       description: Read all Notes shared with a User. If notes are shared with a user, he can read them. User's id determined from the JWT token passed in API request header will be used.
       responses:
@@ -174,36 +150,6 @@ paths:
 
 components:
   schemas:
-    UserSignUpRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          description: The username of the user (minimum length 4).
-        email:
-          type: string
-          description: The email address of the user (must be unique and valid email).
-        password:
-          type: string
-          description: The user's password. Length must be 8 consists of atleast 1 small letter, 1 capital letter, 1 number & 1 symbol.
-      required:
-        - username
-        - email
-        - password
-
-    UserSignInRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          description: The email address of the user (must be a valid email).
-        password:
-          type: string
-          description: The user's password.
-      required:
-        - email
-        - password
-
     NoteCreateRequest:
       type: object
       properties:

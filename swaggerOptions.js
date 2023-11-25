@@ -13,9 +13,10 @@ const options = {
         email: "wahaj.buggcy@gmail.com",
         url: "https://github.com/itsahmadwahaj"
       }
-    }
+    },
+    servers: [{ url: "http://localhost:4040/api/v1" }]
   },
-  apis: ["./routes/*.js", "swagger-definition.yaml"]
+  apis: ["./routes/*.js", "./docs/*.yaml"]
 };
 
 const swaggerSpec = swaggerJsdoc(options);

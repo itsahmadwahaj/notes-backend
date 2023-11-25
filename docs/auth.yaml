@@ -1,0 +1,80 @@
+
+tags:
+  - name: auth
+    description: Everything About Auth
+paths:
+  /auth/signup:
+    post:
+      tags: 
+        - auth
+      summary: Register a new user. Application/json need to be sent in body.
+      description: Register a new user with the provided details.
+      requestBody:
+        description: User data to register a new user.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSignUpRequest"
+      responses:
+        "201":
+          description: User created successfully.
+        "400":
+          description: Invalid or missing data.
+        "409":
+          description: User with given email already exists!.
+        "500":
+          description: Internal server error.
+
+  /auth/signin:
+    post:
+      tags:
+        - auth
+      summary: Sign in a user.
+      description: Sign in a user using email and password.
+      requestBody:
+        description: User credentials for sign-in.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSignInRequest"
+      responses:
+        "200":
+          description: signed in successfully.
+        "401":
+          description: Invalid email or password.
+        "500":
+          description: Internal server error.
+
+components:
+  schemas:
+    UserSignUpRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the user (minimum length 4).
+        email:
+          type: string
+          description: The email address of the user (must be unique and valid email).
+        password:
+          type: string
+          description: The user's password. Length must be 8 consists of atleast 1 small letter, 1 capital letter, 1 number & 1 symbol.
+      required:
+        - username
+        - email
+        - password
+
+    UserSignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address of the user (must be a valid email).
+        password:
+          type: string
+          description: The user's password.
+      required:
+        - email
+        - password
