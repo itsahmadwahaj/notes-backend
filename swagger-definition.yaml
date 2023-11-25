@@ -1,0 +1,241 @@
+openapi: 3.0.0
+info:
+  title: Notes-WebApp API
+  description: API for managing Notes-WebApp data.
+  version: 1.0.0
+
+paths:
+  /api/v1/user/create:
+    post:
+      summary: Register a new user. Application/json need to be sent in body.
+      description: Register a new user with the provided details.
+      requestBody:
+        description: User data to register a new user.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSignUpRequest"
+      responses:
+        "201":
+          description: User created successfully.
+        "400":
+          description: Invalid or missing data.
+        "409":
+          description: User with given email already exists!.
+        "500":
+          description: Internal server error.
+
+  /api/v1/user/signin:
+    post:
+      summary: Sign in a user.
+      description: Sign in a user using email and password.
+      requestBody:
+        description: User credentials for sign-in.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSignInRequest"
+      responses:
+        "200":
+          description: signed in successfully.
+        "401":
+          description: Invalid email or password.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/create:
+    post:
+      summary: Create a new Note.
+      description: Create a new Note with the provided details.
+      requestBody:
+        description: Note data to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteCreateRequest"
+      responses:
+        "201":
+          description: Note created successfully.
+        "400":
+          description: Invalid or missing data.
+        "401":
+          description: Authorization token required / Invalid token.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/readAll:
+    get:
+      summary: Get all notes data.
+      description: Get a list of notes data based on the user's id determined from the JWT token passed in API request header.
+      responses:
+        "200":
+          description: Note/Notes fetched successfully.
+        "401":
+          description: Authorization token required / Invalid token.
+        "404":
+          description: You don't have any notes yet.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/read/:id:
+    get:
+      summary: Get a Note data. Example; (http://localhost:4040/api/v1/note/read/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      description: Get a Note data based on Note's ID passed in url and user's id determined from the JWT token passed in API request header.
+      responses:
+        "200":
+          description: Note fetched successfully.
+        "401":
+          description: Authorization token required / Invalid token.
+        "403":
+          description: You are not author of this note.
+        "404":
+          description: Note not found.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/update/:id:
+    put:
+      summary: Update an existing Note. Example; (http://localhost:4040/api/v1/note/update/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      description: Update an existing Note with the provided details. Note's ID will be received from url and user's id determined from the JWT token passed in API request header.
+      requestBody:
+        description: Note's data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteUpdateRequest"
+      responses:
+        "200":
+          description: Note updated successfully.
+        "404":
+          description: Note not found.
+        "400":
+          description: Authorization token required / Invalid token.
+        "403":
+          description: You are not author of this note.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/delete/:id:
+    delete:
+      summary: Delete an existing Note. Example; (http://localhost:4040/api/v1/note/delete/2d1396ee-f973-45ad-8908-2f8c393439d1)
+      description: Delete an existing Note using Note's ID, passed in url and user's id determined from the JWT token passed in API request header.
+      responses:
+        "200":
+          description: Note deleted successfully.
+        "404":
+          description: Note not found.
+        "400":
+          description: Authorization token required / Invalid token.
+        "403":
+          description: You are not author of this note.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/share:
+    post:
+      summary: Share a Note with other user.
+      description: Share a Note with other user by providing details. Note's ID and User' ID (to be shared with) will be passed in body.
+      requestBody:
+        description: Data to share a note with other user.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteShareRequest"
+      responses:
+        "200":
+          description: Note shared successfully.
+        "404":
+          description: Note/User not found.
+        "400":
+          description: Authorization token required / Invalid token.
+        "403":
+          description: You are not author of this note.
+        "500":
+          description: Internal server error.
+
+  /api/v1/note/readAllSharedNotes:
+    post:
+      summary: Read all Notes shared with a User.
+      description: Read all Notes shared with a User. If notes are shared with a user, he can read them. User's id determined from the JWT token passed in API request header will be used.
+      responses:
+        "200":
+          description: Shared notes fetched successfully.
+        "404":
+          description: Shared notes not found.
+        "400":
+          description: Authorization token required / Invalid token.
+        "500":
+          description: Internal server error.
+
+components:
+  schemas:
+    UserSignUpRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the user (minimum length 4).
+        email:
+          type: string
+          description: The email address of the user (must be unique and valid email).
+        password:
+          type: string
+          description: The user's password. Length must be 8 consists of atleast 1 small letter, 1 capital letter, 1 number & 1 symbol.
+      required:
+        - username
+        - email
+        - password
+
+    UserSignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address of the user (must be a valid email).
+        password:
+          type: string
+          description: The user's password.
+      required:
+        - email
+        - password
+
+    NoteCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the note. (min 4 characters, max 10 characters)
+        body:
+          type: string
+          description: A body of the note. (min 10 characters, max 250 characters)
+      required:
+        - title
+        - body
+
+    NoteUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the note. (min 4 characters, max 10 characters)
+        body:
+          type: string
+          description: A body of the note. (min 10 characters, max 250 characters)
+
+    NoteShareRequest:
+      type: object
+      properties:
+        noteId:
+          type: string
+          description: The id of the note which is being shared. (must be a UUID)
+        sharedWithUserId:
+          type: string
+          description: The id of the user, a note is being shared with. (must be a UUID)
+      required:
+        - noteId
+        - sharedWithUserId

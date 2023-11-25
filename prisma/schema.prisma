@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @unique @default(uuid())
+  username    String
+  email       String        @unique
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  notes       Note[]
+  sharedNotes NoteSharing[] @relation("SharedToUser")
+}
+
+model Note {
+  id          String        @id @unique @default(uuid())
+  title       String
+  body        String
+  createdAt   DateTime      @default(now())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  sharedNotes NoteSharing[] @relation("SharedNote")
+}
+
+model NoteSharing {
+  id             String   @id @unique @default(uuid())
+  createdAt      DateTime @default(now())
+  noteId         String
+  note           Note     @relation("SharedNote", fields: [noteId], references: [id])
+  sharedToUserId String
+  sharedToUser   User     @relation("SharedToUser", fields: [sharedToUserId], references: [id])
+}
