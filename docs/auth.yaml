@@ -42,6 +42,28 @@ paths:
       responses:
         "200":
           description: signed in successfully.
+          content:
+            application/json:
+              
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: "#/components/schemas/UserSignInRequest"
+                    properties:
+                      token:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxOTM0ZTliLTM4YzYtNGU0Ny05M2NlLTNkNzY1YTc0NjhiMSIsInVzZXJuYW1lIjoibG9yZW0iLCJlbWFpbCI6ImxvcmVtQG1haWwuY29tIiwiaWF0IjoxNzAwOTI1NTU2LCJleHAiOjE3MDIyMjE1NTZ9.xWjdhp7B-IQMRj0S7Os4j6z1aALAkDireVjG-ZEjFK4"
+                      id:
+                        type: string
+                        example: 01934e9b-38c6-4e47-93ce-3d765a7468b1
+                  message: 
+                    type: string
+                    example: "signed in successfully"
+            
+
         "401":
           description: Invalid email or password.
         "500":
@@ -55,12 +77,15 @@ components:
         username:
           type: string
           description: The username of the user (minimum length 4).
+          example: "lorem"
         email:
           type: string
           description: The email address of the user (must be unique and valid email).
+          example: "lorem@mail.com"
         password:
           type: string
           description: The user's password. Length must be 8 consists of atleast 1 small letter, 1 capital letter, 1 number & 1 symbol.
+          example: "Lorem123_"
       required:
         - username
         - email
@@ -72,9 +97,11 @@ components:
         email:
           type: string
           description: The email address of the user (must be a valid email).
+          example: "lorem@mail.com"
         password:
           type: string
           description: The user's password.
+          example: "Lorem123_"
       required:
         - email
         - password

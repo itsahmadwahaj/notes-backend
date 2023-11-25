@@ -2,13 +2,16 @@ tags:
   - name: notes
     description: Everything About Notes
 
-paths:
+
+paths:  
   /notes:
     post:
       tags:
         - notes
       summary: Create a new Note.
       description: Create a new Note with the provided details.
+      security:
+        - bearerAuth: []
       requestBody:
         description: Note data to create.
         required: true
@@ -19,6 +22,11 @@ paths:
       responses:
         "201":
           description: Note created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotesCreateResponse'
+
         "400":
           description: Invalid or missing data.
         "401":
@@ -31,9 +39,15 @@ paths:
         - notes
       summary: Get all notes data.
       description: Get a list of notes data based on the user's id determined from the JWT token passed in API request header.
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Note/Notes fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllNotesResponse'
         "401":
           description: Authorization token required / Invalid token.
         "404":
@@ -53,10 +67,17 @@ paths:
       tags:
       - notes
       summary: Get a Notes data providing specific notes_id.
+      security:
+        - bearerAuth: []
       description: Get a Note data based on Note's ID passed in url and user's id determined from the JWT token passed in API request header.
       responses:
         "200":
           description: Note fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotesGetResponse'
+          
         "401":
           description: Authorization token required / Invalid token.
         "403":
@@ -69,7 +90,8 @@ paths:
     put:
       tags:
         - notes
-
+      security:
+        - bearerAuth: []
       summary: Update an existing Note providing its notes_id.
       description: Update an existing Note with the provided details. Note's ID will be received from url and user's id determined from the JWT token passed in API request header.
       requestBody:
@@ -82,6 +104,10 @@ paths:
       responses:
         "200":
           description: Note updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotesCreateResponse'
         "404":
           description: Note not found.
         "400":
@@ -92,6 +118,8 @@ paths:
           description: Internal server error.
 
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - notes
       summary: Delete an existing Note providing its notes_id.
@@ -110,6 +138,8 @@ paths:
 
   /notes/shared:
     post:
+      security:
+        - bearerAuth: []
       tags:
         - notes
       summary: Share a Note with other user.
@@ -136,11 +166,17 @@ paths:
     get:
       tags:
         - notes
+      security:
+        - bearerAuth: []
       summary: Read all Notes shared with a User.
       description: Read all Notes shared with a User. If notes are shared with a user, he can read them. User's id determined from the JWT token passed in API request header will be used.
       responses:
         "200":
           description: Shared notes fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllNotesResponse'
         "404":
           description: Shared notes not found.
         "400":
@@ -156,9 +192,11 @@ components:
         title:
           type: string
           description: The name of the note. (min 4 characters, max 10 characters)
+          example: "Lorem Ispum"
         body:
           type: string
           description: A body of the note. (min 10 characters, max 250 characters)
+          example: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam imperdiet dictum arcu a blandit. Pellentesque vel nibh sodales, dignissim orci in, pharetra sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed pulvinar libero. Sed erat nibh, posuere in interdum eu, efficitur sit amet dolor. Ut vitae risus nulla. Integer varius eu ante vitae scelerisque. Donec faucibus purus orci, volutpat hendrerit libero pulvinar eu. Suspendisse potenti."
       required:
         - title
         - body
@@ -169,19 +207,119 @@ components:
         title:
           type: string
           description: The name of the note. (min 4 characters, max 10 characters)
+          example: "Lorem Ispum"
+     
         body:
           type: string
           description: A body of the note. (min 10 characters, max 250 characters)
-
+          example: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam imperdiet dictum arcu a blandit. Pellentesque vel nibh sodales, dignissim orci in, pharetra sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed pulvinar libero. Sed erat nibh, posuere in interdum eu, efficitur sit amet dolor. Ut vitae risus nulla. Integer varius eu ante vitae scelerisque. Donec faucibus purus orci, volutpat hendrerit libero pulvinar eu. Suspendisse potenti."
+    
     NoteShareRequest:
       type: object
       properties:
         noteId:
           type: string
           description: The id of the note which is being shared. (must be a UUID)
+          
         sharedWithUserId:
           type: string
           description: The id of the user, a note is being shared with. (must be a UUID)
       required:
         - noteId
         - sharedWithUserId
+
+    ResponseObject:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "32d8ef89-d53d-40a6-a920-8c8159eecb0a"
+        createdAt:
+          type: string
+          example: "2023-11-25T16:46:32.345Z"
+
+    NotesResponse:
+      type: object
+      allOf: 
+        - $ref: "#/components/schemas/ResponseObject"
+        - $ref: "#/components/schemas/NoteCreateRequest"
+        
+
+    NotesCreateResponse:
+      type: object
+      properties:
+        note:
+          type: object
+          allOf: 
+            - $ref: "#/components/schemas/NotesResponse"
+            - $ref: "#/components/schemas/NoteCreateRequest"
+          properties:
+            userId:
+              type: string
+              example: "01934e9b-38c6-4e47-93ce-3d765a7468b1"
+            message:
+              type: string
+              example: 'Note created successfully'
+
+    NotesUpdateResponse:
+      type: object
+      properties:
+        note:
+          type: object
+          allOf: 
+            - $ref: "#/components/schemas/NotesResponse"
+            - $ref: "#/components/schemas/NoteCreateRequest"
+          properties:
+            userId:
+              type: string
+              example: "01934e9b-38c6-4e47-93ce-3d765a7468b1"
+            message:
+              type: string
+              example: 'Note updated successfully'
+
+    AllNotesResponse:
+      type: object
+      properties:
+        notes:
+          type: array
+          items:
+            type: object
+            allOf:
+              - $ref: "#/components/schemas/NotesResponse"
+              - $ref: "#/components/schemas/NoteCreateRequest"
+            properties:
+              userId:
+                type: string
+                example: "01934e9b-38c6-4e47-93ce-3d765a7468b1"
+        message: 
+          type: string
+          example: "Note/Notes fetched successfully."
+
+    NotesGetResponse:
+      type: object
+      properties:
+        note:
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/NotesResponse"
+            - $ref: "#/components/schemas/NoteCreateRequest"
+          properties:
+            user:
+              properties:
+                username:
+                  type: string
+                  example: "Lorem"
+            sharedNotes:
+              type: array
+              items:
+                type: object
+                properties:
+                  sharedToUser:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: "Lorem"
+            message:
+              type: string
+              example: 'Note created successfully'

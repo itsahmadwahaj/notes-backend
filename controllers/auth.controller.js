@@ -44,7 +44,8 @@ export async function signInUser(req, res) {
       where: { email: req.body.email }
     });
 
-    if (!user) return res.status(401).send({ message: "Invalid email..." });
+    if (!user)
+      return res.status(401).send({ message: "Invalid email or password" });
 
     const validPassword = await bcrypt.compare(
       req.body.password,
@@ -52,7 +53,7 @@ export async function signInUser(req, res) {
     );
 
     if (!validPassword)
-      return res.status(401).send({ message: "Invalid password..." });
+      return res.status(401).send({ message: "Invalid email or password" });
 
     const tokenData = {
       id: user.id,

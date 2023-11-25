@@ -14,7 +14,8 @@ const options = {
         url: "https://github.com/itsahmadwahaj"
       }
     },
-    servers: [{ url: "http://localhost:4040/api/v1" }]
+    servers: [{ url: `http://localhost:${process.env.PORT || "4040"}/api/v1` }]
+    // security: [{ bearerAuth: [] }]
   },
   apis: ["./routes/*.js", "./docs/*.yaml"]
 };

@@ -1,8 +1,8 @@
 import Joi from "joi";
 
 const createNoteSchema = Joi.object({
-  title: Joi.string().required().min(4).max(10).label("Title"),
-  body: Joi.string().required().min(10).max(250).label("Body"),
+  title: Joi.string().required().min(4).max(30).label("Title"),
+  body: Joi.string().required().min(10).max(2500).label("Body")
 });
 
 export function validateCreateNote(req, res, next) {
@@ -14,8 +14,8 @@ export function validateCreateNote(req, res, next) {
 }
 
 const updateNoteSchema = Joi.object({
-  title: Joi.string().optional().min(4).max(10).label("Title"),
-  body: Joi.string().optional().min(10).max(250).label("Body"),
+  title: Joi.string().optional().min(4).max(30).label("Title"),
+  body: Joi.string().optional().min(10).max(2500).label("Body")
 });
 
 export function validateUpdateNote(req, res, next) {
@@ -34,7 +34,7 @@ const shareNoteSchema = Joi.object({
   sharedWithUserId: Joi.string()
     .required()
     .guid({ version: ["uuidv4"] })
-    .label("User ID"),
+    .label("User ID")
 });
 
 export function validateShareNote(req, res, next) {
