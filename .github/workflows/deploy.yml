@@ -50,6 +50,7 @@ jobs:
       run: |
             ls -la
             zip -r deploy.zip * -x "**node_modules**"
+      working-directory: ${{ github.workspace }}
     
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v16
