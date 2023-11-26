@@ -21,10 +21,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-    - name: Set up Environment Variables
+    - name: Generate .env file
       run: |
-          touch .env
-          echo "${{secrets.envFile}}" > .env
+        echo "${{secrets.envFile}}" > .env
+        ls -la
+        cat .env
+      working-directory: ${{ github.workspace }}        
     
     - name: Get Timestamp
       uses: gerred/actions/current-time@master
