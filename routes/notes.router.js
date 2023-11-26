@@ -19,10 +19,10 @@ const routerNote = Router();
 
 routerNote.post("/", authenticateUser, validateCreateNote, createNote);
 routerNote.get("/", authenticateUser, readAllNotes);
+routerNote.post("/shared", authenticateUser, validateShareNote, shareNote);
+routerNote.get("/shared", authenticateUser, readSharedNotes);
 routerNote.get("/:id", authenticateUser, readNote);
 routerNote.put("/:id", authenticateUser, validateUpdateNote, updateNote);
 routerNote.delete("/:id", authenticateUser, deleteNote);
-routerNote.post("/shared", authenticateUser, validateShareNote, shareNote);
-routerNote.get("/shared", authenticateUser, readSharedNotes);
 
 export default routerNote;

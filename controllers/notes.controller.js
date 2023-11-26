@@ -169,6 +169,8 @@ export async function shareNote(req, res) {
   try {
     const { sharedWithUserId, noteId } = req.body;
 
+    if (req.user.id === sharedWithUserId)
+      return res.status(400).send({ message: "Invalid Request" });
     let note = await prisma.note.findUnique({
       where: { id: noteId }
     });

@@ -110,7 +110,7 @@ paths:
                 $ref: '#/components/schemas/NotesCreateResponse'
         "404":
           description: Note not found.
-        "400":
+        "401":
           description: Authorization token required / Invalid token.
         "403":
           description: You are not author of this note.
@@ -129,7 +129,7 @@ paths:
           description: Note deleted successfully.
         "404":
           description: Note not found.
-        "400":
+        "401":
           description: Authorization token required / Invalid token.
         "403":
           description: You are not author of this note.
@@ -156,7 +156,7 @@ paths:
           description: Note shared successfully.
         "404":
           description: Note/User not found.
-        "400":
+        "401":
           description: Authorization token required / Invalid token.
         "403":
           description: You are not author of this note.
@@ -179,7 +179,7 @@ paths:
                 $ref: '#/components/schemas/AllNotesResponse'
         "404":
           description: Shared notes not found.
-        "400":
+        "401":
           description: Authorization token required / Invalid token.
         "500":
           description: Internal server error.
