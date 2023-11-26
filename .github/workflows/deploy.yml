@@ -23,7 +23,8 @@ jobs:
 
     - name: Set up Environment Variables
       run: |
-        echo "${{secrets.envFile}}" > .env
+          touch .env
+          echo "${{secrets.envFile}}" > .env
     
     - name: Get Timestamp
       uses: gerred/actions/current-time@master
@@ -47,7 +48,7 @@ jobs:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: notes-webapp
-        environment_name: notes-webapp-env
+        environment_name: Notes-webapp-env
         version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
         region: ${{ secrets.AWS_DEFAULT_REGION }}
         deployment_package: deploy.zip
