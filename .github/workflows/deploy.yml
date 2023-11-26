@@ -48,8 +48,9 @@ jobs:
     
     - name: Generate Deployment Package
       run: |
-            ls -la
-            zip -r deploy.zip * -x "**node_modules**"
+            shopt -s dotglob
+            zip -r deploy.zip * -x "**/node_modules**"
+            shopt -u dotglob
       working-directory: ${{ github.workspace }}
     
     - name: Deploy to EB
