@@ -41,9 +41,12 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      
 
-    - name: Build and Push Docker Image to ECR
-      run: |
-        docker build -t ${{ secrets.AWS_ECR_REGISTRY_URI }}/your-repository-name:latest .
-        docker login -u AWS -p ${{ secrets.AWS_REGISTRY_TOKEN }} ${{ secrets.AWS_ECR_REGISTRY_URI }}
-        docker push ${{ secrets.AWS_ECR_REGISTRY_URI }}/your-repository-name:latest
+    - name: Deploy to Elastic Beanstalk
+      uses: aws-actions/amazon-elastic-beanstalk-deploy@v1
+      with:
+        application-name: notes-webapp
+        environment-name: Notes-webapp-env
+        version-label: $GITHUB_SHA
+        package: .
