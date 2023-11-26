@@ -24,7 +24,7 @@ jobs:
     - name: Remove .gitignore
       run: |
         rm -f .gitignore
-        working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}
           
     - name: Generate .env file
       run: |
